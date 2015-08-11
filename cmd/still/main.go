@@ -21,5 +21,11 @@ func initApp() *cli.App {
 	app.Author = commands.Author
 	app.Email = commands.AuthorEmail
 
+	app.Commands = []cli.Command{
+		commands.NewBuildCommand(),
+		commands.NewPipeCommand(),
+		commands.NewApplyCommand(),
+	}
+
 	return app
 }
