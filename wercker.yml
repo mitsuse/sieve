@@ -1,0 +1,20 @@
+box: golang:1.5
+build:
+    steps:
+        - setup-go-workspace
+        - script:
+            name: build
+            code: |
+                go get -t ./...
+        - mitsuse/gover:
+            project: "github.com/mitsuse/olive"
+            report: "coverage.txt"
+        - script:
+            name: codecov
+            code: |
+                bash <(curl -s https://codecov.io/bash)
+    after-steps:
+        - slack-notifier:
+            url: $SLACK_NOTIFIER_URL
+            channel: $SLACK_NOTIFIER_CHANNEL
+            username: wercker
