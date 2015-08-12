@@ -22,8 +22,8 @@ func (s *Still) Serialize(writer io.Writer) error {
 	return nil
 }
 
-func (s *Still) Run(in <-chan string) (out chan<- string) {
-	out = make(chan string)
+func (s *Still) Run(in <-chan string) (out <-chan string) {
+	ch := make(chan string)
 
 	go func() {
 		for text := range in {
@@ -31,12 +31,12 @@ func (s *Still) Run(in <-chan string) (out chan<- string) {
 				continue
 			}
 
-			out <- text
+			ch <- text
 		}
-		close(out)
+		close(ch)
 	}()
 
-	return out
+	return ch
 }
 
 func (s *Still) Filter(inputSeq []string) []string {
