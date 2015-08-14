@@ -37,5 +37,5 @@ func (s *Still) FilterAll(inputSeq []string) []string {
 }
 
 func (s *Still) Filter(text string) bool {
-	return s.c.Classify(s.extractor(text)) != 0
+	return s.c.Classify(s.extractor(text)) == 0
 }
