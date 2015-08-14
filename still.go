@@ -4,12 +4,25 @@ import (
 	"io"
 
 	"github.com/mitsuse/matrix-go"
+	"github.com/mitsuse/matrix-go/dense"
 	"github.com/mitsuse/olive/classifier"
 )
 
 type Still struct {
 	extractor func(string) matrix.Matrix
 	c         *classifier.Classifier
+}
+
+func New() *Still {
+	// TODO: Get the extractor as a argument.
+	s := &Still{
+		extractor: func(text string) matrix.Matrix {
+			return dense.Zeros(1, 8)
+		},
+		c: classifier.New(2, 8),
+	}
+
+	return s
 }
 
 func Deserialize(reader io.Reader) (*Still, error) {
