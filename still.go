@@ -22,28 +22,11 @@ func (s *Still) Serialize(writer io.Writer) error {
 	return nil
 }
 
-func (s *Still) Run(in <-chan string) (out <-chan string) {
-	ch := make(chan string)
-
-	go func() {
-		for text := range in {
-			if s.filterOne(text) {
-				continue
-			}
-
-			ch <- text
-		}
-		close(ch)
-	}()
-
-	return ch
-}
-
-func (s *Still) Filter(inputSeq []string) []string {
+func (s *Still) FilterAll(inputSeq []string) []string {
 	outputSeq := make([]string, 0, len(inputSeq))
 
 	for _, text := range inputSeq {
-		if s.filterOne(text) {
+		if s.Filter(text) {
 			continue
 		}
 
@@ -53,6 +36,6 @@ func (s *Still) Filter(inputSeq []string) []string {
 	return outputSeq
 }
 
-func (s *Still) filterOne(text string) bool {
+func (s *Still) Filter(text string) bool {
 	return s.c.Classify(s.extractor(text)) != 0
 }
