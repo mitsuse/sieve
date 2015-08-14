@@ -4,7 +4,6 @@ import (
 	"bufio"
 	"fmt"
 	"io"
-	"os"
 
 	"github.com/codegangsta/cli"
 	"github.com/mitsuse/still"
@@ -30,12 +29,7 @@ func NewPipeCommand() cli.Command {
 }
 
 func actionPipe(context *cli.Context) {
-	// TODO: Deserialize still from a file.
-	s := still.New()
-
-	if err := filterWithIo(s, os.Stdin, os.Stdout); err != nil {
-		// TODO: Print error message.
-	}
+	// TODO: Implement.
 }
 
 func filterWithIo(s *still.Still, reader io.Reader, writer io.Writer) (err error) {

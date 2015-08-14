@@ -10,33 +10,24 @@ type Extractor struct {
 	ngramMap map[string]int
 }
 
-func newExtractor(maxOrder int) *Extractor {
-	e := &Extractor{
-		maxOrder: maxOrder,
-		ngramMap: make(map[string]int),
-	}
-
-	return e
-}
-
-func updateExtractor(e *Extractor, textSeq []string) *Extractor {
-	m := make(map[string]int)
-
-	for ngram, id := range e.ngramMap {
-		m[ngram] = id
-	}
+func newExtractor(maxOrder int, textSeq []string) *Extractor {
+	ngramMap := make(map[string]int)
 
 	for _, text := range textSeq {
-		for _, ngram := range extractNgrams(e.maxOrder, text) {
-			m[ngram] = len(m)
+		for _, ngram := range extractNgrams(maxOrder, text) {
+			ngramMap[ngram] = len(ngramMap)
 		}
 	}
 
 	updatedExtractor := &Extractor{
-		ngramMap: m,
+		ngramMap: ngramMap,
 	}
 
 	return updatedExtractor
+}
+
+func (e *Extractor) Dimensions() int {
+	return len(e.ngramMap)
 }
 
 func (e *Extractor) Extract(text string) matrix.Matrix {

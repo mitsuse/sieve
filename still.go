@@ -3,7 +3,9 @@ package still
 import (
 	"io"
 
+	"github.com/mitsuse/olive"
 	"github.com/mitsuse/olive/classifier"
+	"github.com/mitsuse/olive/perceptron"
 )
 
 type Still struct {
@@ -11,10 +13,30 @@ type Still struct {
 	c         *classifier.Classifier
 }
 
-func New() *Still {
+func Learn(exampleSeq []*Example) *Still {
+	textSeq := make([]string, len(exampleSeq))
+	for _, example := range exampleSeq {
+		textSeq = append(textSeq, example.Text)
+	}
+	extractor := newExtractor(3, textSeq)
+
+	instanceSeq := make([]*olive.Instance, len(exampleSeq))
+	for _, example := range exampleSeq {
+		instance := olive.NewInstance(
+			extractor.Extract(example.Text),
+			example.Class,
+		)
+		instanceSeq = append(instanceSeq, instance)
+	}
+
+	c := perceptron.New(10).Learn(
+		classifier.New(2, extractor.Dimensions()),
+		instanceSeq,
+	)
+
 	s := &Still{
-		extractor: newExtractor(3),
-		c:         classifier.New(2, 8),
+		extractor: extractor,
+		c:         c,
 	}
 
 	return s
