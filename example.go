@@ -1,6 +1,6 @@
 package still
 
 type Example struct {
-	Text  string
-	Class int
+	Text  string `json:"text"`
+	Class int    `json:"class"`
 }

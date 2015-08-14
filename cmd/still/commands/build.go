@@ -1,7 +1,11 @@
 package commands
 
 import (
+	"encoding/json"
+	"os"
+
 	"github.com/codegangsta/cli"
+	"github.com/mitsuse/still"
 )
 
 func NewBuildCommand() cli.Command {
@@ -30,5 +34,31 @@ func NewBuildCommand() cli.Command {
 }
 
 func actionBuild(context *cli.Context) {
-	// TODO:
+	exampleSeq := make([]*still.Example, 0)
+
+	examplesFile, err := os.Open(context.String("examples"))
+	if err != nil {
+		// TODO: Show error message.
+		return
+	}
+
+	if err := json.NewDecoder(examplesFile).Decode(&exampleSeq); err != nil {
+		// TODO: Show error message.
+		return
+	}
+	examplesFile.Close()
+
+	s := still.Learn(exampleSeq)
+
+	stillFile, err := os.Create(context.String("model"))
+	if err != nil {
+		// TODO: Show error message.
+		return
+	}
+
+	if err := s.Serialize(stillFile); err != nil {
+		// TODO: Show error message.
+		return
+	}
+	stillFile.Close()
 }
