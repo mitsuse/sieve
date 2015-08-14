@@ -23,12 +23,6 @@ func NewBuildCommand() cli.Command {
 				Value: "examples.json",
 				Usage: "The input path of a file containing learning examples",
 			},
-
-			cli.IntFlag{
-				Name:  "iterations,i",
-				Value: 10,
-				Usage: "The number of iterations for learning.",
-			},
 		},
 	}
 
