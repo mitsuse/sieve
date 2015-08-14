@@ -3,23 +3,18 @@ package still
 import (
 	"io"
 
-	"github.com/mitsuse/matrix-go"
-	"github.com/mitsuse/matrix-go/dense"
 	"github.com/mitsuse/olive/classifier"
 )
 
 type Still struct {
-	extractor func(string) matrix.Matrix
+	extractor *Extractor
 	c         *classifier.Classifier
 }
 
 func New() *Still {
-	// TODO: Get the extractor as a argument.
 	s := &Still{
-		extractor: func(text string) matrix.Matrix {
-			return dense.Zeros(1, 8)
-		},
-		c: classifier.New(2, 8),
+		extractor: newExtractor(3),
+		c:         classifier.New(2, 8),
 	}
 
 	return s
@@ -50,5 +45,6 @@ func (s *Still) FilterAll(inputSeq []string) []string {
 }
 
 func (s *Still) Filter(text string) bool {
-	return s.c.Classify(s.extractor(text)) == 0
+	feature := s.extractor.Extract(text)
+	return s.c.Classify(feature) == 0
 }
