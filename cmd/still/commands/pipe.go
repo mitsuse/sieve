@@ -32,7 +32,7 @@ func actionPipe(context *cli.Context) {
 	// TODO:
 }
 
-func filterWithIo(s still.Still, reader io.Reader, writer io.Writer) (err error) {
+func filterWithIo(s *still.Still, reader io.Reader, writer io.Writer) (err error) {
 	scanner := bufio.NewScanner(reader)
 
 	for scanner.Scan() {
