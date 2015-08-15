@@ -14,13 +14,13 @@ type Still struct {
 }
 
 func Learn(exampleSeq []*Example) *Still {
-	textSeq := make([]string, len(exampleSeq))
+	textSeq := make([]string, 0, len(exampleSeq))
 	for _, example := range exampleSeq {
 		textSeq = append(textSeq, example.Text)
 	}
 	extractor := newExtractor(3, textSeq)
 
-	instanceSeq := make([]*olive.Instance, len(exampleSeq))
+	instanceSeq := make([]*olive.Instance, 0, len(exampleSeq))
 	for _, example := range exampleSeq {
 		instance := olive.NewInstance(
 			extractor.Extract(example.Text),
