@@ -17,6 +17,9 @@ func newExtractor(maxOrder int, textSeq []string) *Extractor {
 
 	for _, text := range textSeq {
 		for _, ngram := range extractNgrams(maxOrder, text) {
+			if _, exist := ngramMap[ngram]; exist {
+				continue
+			}
 			ngramMap[ngram] = len(ngramMap)
 		}
 	}
@@ -71,12 +74,14 @@ func (e *Extractor) Extract(text string) matrix.Matrix {
 }
 
 func extractNgrams(maxOrder int, text string) []string {
-	ngramSeq := make([]string, len(text)*maxOrder)
+	charSeq := []rune(text)
+
+	ngramSeq := make([]string, 0, len(charSeq)*maxOrder)
 
 	for order := 1; order <= maxOrder; order++ {
-		for begin := 0; begin < len(text)-order; begin++ {
+		for begin := 0; begin < len(charSeq)-order; begin++ {
 			end := begin + order
-			ngramSeq = append(ngramSeq, text[begin:end])
+			ngramSeq = append(ngramSeq, string(charSeq[begin:end]))
 		}
 	}
 
