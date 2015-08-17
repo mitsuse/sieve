@@ -1,6 +1,8 @@
 package still
 
 import (
+	"encoding/json"
+
 	"github.com/mitsuse/matrix-go"
 	"github.com/mitsuse/matrix-go/dense"
 )
@@ -24,6 +26,28 @@ func newExtractor(maxOrder int, textSeq []string) *Extractor {
 	}
 
 	return updatedExtractor
+}
+
+func (e *Extractor) UnmarshalJSON(b []byte) error {
+	jsonObject := &extractorJson{}
+
+	if err := json.Unmarshal(b, jsonObject); err != nil {
+		return err
+	}
+
+	e.maxOrder = jsonObject.MaxOrder
+	e.ngramMap = jsonObject.NgramMap
+
+	return nil
+}
+
+func (e *Extractor) MarshalJSON() ([]byte, error) {
+	jsonObject := &extractorJson{
+		MaxOrder: e.maxOrder,
+		NgramMap: e.ngramMap,
+	}
+
+	return json.Marshal(jsonObject)
 }
 
 func (e *Extractor) Dimensions() int {
@@ -56,4 +80,9 @@ func extractNgrams(maxOrder int, text string) []string {
 	}
 
 	return ngramSeq
+}
+
+type extractorJson struct {
+	MaxOrder int            `json:"max_order"`
+	NgramMap map[string]int `json:"ngram_map"`
 }
