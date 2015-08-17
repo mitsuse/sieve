@@ -11,7 +11,7 @@ import (
 )
 
 const (
-	version    int = 1
+	version    int = 0
 	minVersion     = 0
 	maxVersion     = 0
 )
