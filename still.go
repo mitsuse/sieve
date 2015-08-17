@@ -58,13 +58,17 @@ func Learn(exampleSeq []*Example) *Still {
 }
 
 func Deserialize(reader io.Reader) (*Still, error) {
-	// TODO: Implement.
-	return nil, nil
+	s := &Still{}
+
+	if err := json.NewDecoder(reader).Decode(s); err != nil {
+		return nil, err
+	}
+
+	return s, nil
 }
 
 func (s *Still) Serialize(writer io.Writer) error {
-	// TODO: Implement.
-	return nil
+	return json.NewEncoder(writer).Encode(s)
 }
 
 func (s *Still) UnmarshalJSON(b []byte) error {
