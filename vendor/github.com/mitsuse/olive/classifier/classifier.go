@@ -4,12 +4,13 @@ Package "classifier" provides an implementation of multi-class linear classifier
 package classifier
 
 import (
+	"encoding/json"
+	"errors"
 	"io"
 
-	. "github.com/mitsuse/matrix-go"
+	"github.com/mitsuse/matrix-go"
 	"github.com/mitsuse/matrix-go/dense"
 	"github.com/mitsuse/olive/internal/validates"
-	"github.com/mitsuse/serial-go"
 )
 
 const (
@@ -19,13 +20,15 @@ const (
 )
 
 const (
-	id      string = "github/mitsuse/olive/classifier"
-	version byte   = 0
+	version    int = 0
+	minVersion     = 0
+	maxVersion     = 0
 )
 
 // Classifier is an implementation of multi-class linear classifier.
 type Classifier struct {
-	weights Matrix
+	initialized bool
+	weights     matrix.Matrix
 }
 
 // Create a new classifier with the given number of classes and dimensions of features.
@@ -34,6 +37,7 @@ func New(classSize, dimensions int) *Classifier {
 	validates.ShouldBeOneOrMoreClasses(classSize)
 
 	c := &Classifier{
+		initialized: true,
 		// TODO: Replace the weights with the immutable version of dense matrix.
 		weights: dense.Zeros(classSize, dimensions),
 	}
@@ -42,24 +46,11 @@ func New(classSize, dimensions int) *Classifier {
 }
 
 // Deserialize a classifier from the given reader.
-// This accepts data generated with (*Classifier).Serialize.
 func Deserialize(reader io.Reader) (*Classifier, error) {
-	r := serial.NewReader(id, version, reader)
+	c := &Classifier{}
 
-	r.ReadId()
-	r.ReadVersion()
-
-	if err := r.Error(); err != nil {
+	if err := json.NewDecoder(reader).Decode(c); err != nil {
 		return nil, err
-	}
-
-	weights, err := dense.Deserialize(reader)
-	if err != nil {
-		return nil, err
-	}
-
-	c := &Classifier{
-		weights: weights,
 	}
 
 	return c, nil
@@ -67,24 +58,41 @@ func Deserialize(reader io.Reader) (*Classifier, error) {
 
 // Serialize this classifier and write it by using the given writer.
 func (c *Classifier) Serialize(writer io.Writer) error {
-	w := serial.NewWriter(id, version, writer)
+	return json.NewEncoder(writer).Encode(c)
+}
 
-	w.WriteId()
-	w.WriteVersion()
+func (c *Classifier) UnmarshalJSON(b []byte) error {
+	if c.initialized {
+		return errors.New(AlreadyInitializedError)
+	}
 
-	if err := w.Error(); err != nil {
+	jsonObject := &classifierJson{}
+
+	if err := json.Unmarshal(b, jsonObject); err != nil {
 		return err
 	}
 
-	if err := c.weights.Serialize(writer); err != nil {
-		return err
+	if jsonObject.Version < minVersion || maxVersion < jsonObject.Version {
+		return errors.New(IncompatibleVersionError)
 	}
+
+	c.weights = jsonObject.Weights
+	c.initialized = true
 
 	return nil
 }
 
+func (c *Classifier) MarshalJSON() ([]byte, error) {
+	jsonObject := &classifierJson{
+		Version: version,
+		Weights: dense.Convert(c.weights),
+	}
+
+	return json.Marshal(jsonObject)
+}
+
 // Return the weights matrix.
-func (c *Classifier) Weights() Matrix {
+func (c *Classifier) Weights() matrix.Matrix {
 	return c.weights
 }
 
@@ -100,7 +108,7 @@ func (c *Classifier) Dimensions() int {
 
 // Update the weight matrix.
 // The new weight matrix should have same shape as the old one.
-func (c *Classifier) Update(weights Matrix) *Classifier {
+func (c *Classifier) Update(weights matrix.Matrix) *Classifier {
 	validates.ShouldBeCompatibleWeights(c.weights, weights)
 
 	c.weights = weights
@@ -109,7 +117,7 @@ func (c *Classifier) Update(weights Matrix) *Classifier {
 }
 
 // Classify the given feature matrix into one of the classes.
-func (c *Classifier) Classify(feature Matrix) (class int) {
+func (c *Classifier) Classify(feature matrix.Matrix) (class int) {
 	validates.ShouldBeFeature(feature)
 
 	_, class, _ = c.weights.Multiply(feature.Transpose()).Max()
