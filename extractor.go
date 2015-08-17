@@ -22,6 +22,7 @@ func newExtractor(maxOrder int, textSeq []string) *Extractor {
 	}
 
 	updatedExtractor := &Extractor{
+		maxOrder: maxOrder,
 		ngramMap: ngramMap,
 	}
 
