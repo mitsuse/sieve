@@ -1,9 +1,11 @@
 package classifier
 
 import (
+	"bytes"
+	"encoding/json"
 	"testing"
 
-	. "github.com/mitsuse/matrix-go"
+	"github.com/mitsuse/matrix-go"
 	"github.com/mitsuse/matrix-go/dense"
 )
 
@@ -13,7 +15,7 @@ type constructionTest struct {
 }
 
 type classificationTest struct {
-	feature Matrix
+	feature matrix.Matrix
 	class   int
 }
 
@@ -168,4 +170,52 @@ func TestClassifyPanicsByNonFeatureMatrix(t *testing.T) {
 		t.Fatal("Update should use \"validate.ShouldBeFeature\".")
 	}()
 	New(classSize, dimensions).Classify(test)
+}
+
+func TestSerialize(t *testing.T) {
+	c := New(4, 8)
+
+	writer := bytes.NewBuffer([]byte{})
+
+	if err := c.Serialize(writer); err != nil {
+		t.Fatalf("An expected error occured on serialization: %s", err)
+	}
+
+	reader := bytes.NewReader(writer.Bytes())
+
+	d, err := Deserialize(reader)
+
+	if err != nil {
+		t.Fatalf("An expected error occured on deserialization: %s", err)
+	}
+
+	if !c.Weights().Equal(d.Weights()) {
+		t.Fatal("The origianl classifier is not equivalent to a deserialized classifier.")
+	}
+}
+
+func TestUnmarshalJSONFailsWithAlreadyInitializedMatrix(t *testing.T) {
+	c := New(4, 8)
+	d := New(4, 8)
+
+	b, _ := json.Marshal(c)
+
+	if err := json.Unmarshal(b, d); err == nil || err.Error() != AlreadyInitializedError {
+		t.Fatalf("Unmarshal can be applied to uninitialized classifier.")
+	}
+}
+
+func TestUnmarshalJSONFailsWithIncompatibleVersion(t *testing.T) {
+	c := &classifierJson{
+		Version: 99999,
+		Weights: dense.Zeros(4, 8),
+	}
+
+	d := &Classifier{}
+
+	b, _ := json.Marshal(c)
+
+	if err := json.Unmarshal(b, d); err == nil || err.Error() != IncompatibleVersionError {
+		t.Fatalf("Unmarshal can be applied to compatible-version classifier.")
+	}
 }

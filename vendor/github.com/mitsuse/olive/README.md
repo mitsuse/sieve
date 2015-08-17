@@ -29,9 +29,9 @@ $ go get github.com/mitsuse/olive
 
 Olive uses the following libraries:
 
-- [`mitsuse/matrix-go (v0.1.3)`][repo-matrix-go]
+- [`mitsuse/matrix-go (v0.1.5)`][repo-matrix-go]
 
-[repo-matrix-go]: https://github.com/mitsuse/matrix-go/tree/v0.1.3
+[repo-matrix-go]: https://github.com/mitsuse/matrix-go/tree/v0.1.5
 
 
 ## Features
