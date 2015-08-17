@@ -5,13 +5,13 @@ import (
 )
 
 type diagonalCursor struct {
-	matrix  *denseMatrix
+	matrix  *Matrix
 	element float64
-	current types.Index
-	next    types.Index
+	current *types.Index
+	next    *types.Index
 }
 
-func newDiagonalCursor(matrix *denseMatrix) *diagonalCursor {
+func newDiagonalCursor(matrix *Matrix) *diagonalCursor {
 	c := &diagonalCursor{
 		matrix:  matrix,
 		element: 0,
