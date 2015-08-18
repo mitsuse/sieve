@@ -1,13 +1,9 @@
 package commands
 
 import (
-	"bufio"
-	"fmt"
-	"io"
 	"os"
 
 	"github.com/codegangsta/cli"
-	"github.com/mitsuse/still"
 )
 
 func NewFilterCommand() cli.Command {
@@ -30,40 +26,14 @@ func NewFilterCommand() cli.Command {
 }
 
 func actionFilter(context *cli.Context) {
-	stillFile, err := os.Open(context.String("model"))
+	s, err := readModel(context.String("model"))
 	if err != nil {
 		printError(err)
 		return
 	}
 
-	s, err := still.Deserialize(stillFile)
-	if err != nil {
+	if err := useWithPipe(s, os.Stdin, os.Stdout); err != nil {
 		printError(err)
 		return
 	}
-	stillFile.Close()
-
-	if err := filterWithIo(s, os.Stdin, os.Stdout); err != nil {
-		printError(err)
-		return
-	}
-}
-
-func filterWithIo(s *still.Still, reader io.Reader, writer io.Writer) (err error) {
-	scanner := bufio.NewScanner(reader)
-
-	for scanner.Scan() {
-		text := scanner.Text()
-
-		if !s.Filter(text) {
-			continue
-		}
-
-		_, err = fmt.Fprintln(writer, text)
-		if err != nil {
-			return err
-		}
-	}
-
-	return scanner.Err()
 }

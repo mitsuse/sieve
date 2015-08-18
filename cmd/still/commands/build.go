@@ -1,11 +1,14 @@
 package commands
 
 import (
-	"encoding/json"
-	"os"
+	"errors"
 
 	"github.com/codegangsta/cli"
 	"github.com/mitsuse/still"
+)
+
+const (
+	nonPositiveIterations = "\"iterations\" should be a positive number."
 )
 
 func NewBuildCommand() cli.Command {
@@ -27,6 +30,12 @@ func NewBuildCommand() cli.Command {
 				Value: "examples.json",
 				Usage: "The input path of a file containing learning examples",
 			},
+
+			cli.IntFlag{
+				Name:  "iterations,i",
+				Value: 10,
+				Usage: "The number of iterations for examples",
+			},
 		},
 	}
 
@@ -34,31 +43,43 @@ func NewBuildCommand() cli.Command {
 }
 
 func actionBuild(context *cli.Context) {
-	exampleSeq := make([]*still.Example, 0)
-
-	examplesFile, err := os.Open(context.String("examples"))
+	p, err := validateBuildParameters(context)
 	if err != nil {
 		printError(err)
 		return
 	}
 
-	if err := json.NewDecoder(examplesFile).Decode(&exampleSeq); err != nil {
-		printError(err)
-		return
-	}
-	examplesFile.Close()
-
-	s := still.Learn(exampleSeq)
-
-	stillFile, err := os.Create(context.String("model"))
+	examples, err := readExamples(p.ExamplesPath)
 	if err != nil {
 		printError(err)
 		return
 	}
 
-	if err := s.Serialize(stillFile); err != nil {
+	s := still.Learn(p.Iterations, examples)
+
+	if err := writeModel(s, p.ModelPath); err != nil {
 		printError(err)
 		return
 	}
-	stillFile.Close()
+}
+
+type buildParameters struct {
+	ExamplesPath string
+	ModelPath    string
+	Iterations   int
+}
+
+func validateBuildParameters(context *cli.Context) (*buildParameters, error) {
+	iterations := context.Int("iterations")
+	if iterations <= 0 {
+		return nil, errors.New(nonPositiveIterations)
+	}
+
+	p := &buildParameters{
+		ExamplesPath: context.String("examples"),
+		ModelPath:    context.String("model"),
+		Iterations:   iterations,
+	}
+
+	return p, nil
 }
