@@ -55,7 +55,7 @@ func actionBuild(context *cli.Context) {
 		return
 	}
 
-	s := still.Learn(examples)
+	s := still.Learn(p.Iterations, examples)
 
 	if err := writeModel(s, p.ModelPath); err != nil {
 		printError(err)

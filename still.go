@@ -27,7 +27,7 @@ type Still struct {
 	c          *classifier.Classifier
 }
 
-func Learn(exampleSeq []*Example) *Still {
+func Learn(iterations int, exampleSeq []*Example) *Still {
 	textSeq := make([]string, 0, len(exampleSeq))
 	for _, example := range exampleSeq {
 		textSeq = append(textSeq, example.Text)
@@ -43,7 +43,7 @@ func Learn(exampleSeq []*Example) *Still {
 		instanceSeq = append(instanceSeq, instance)
 	}
 
-	c := perceptron.New(10).Learn(
+	c := perceptron.New(iterations).Learn(
 		classifier.New(2, extractor.Dimensions()),
 		instanceSeq,
 	)
