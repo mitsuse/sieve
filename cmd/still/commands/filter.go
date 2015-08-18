@@ -10,12 +10,12 @@ import (
 	"github.com/mitsuse/still"
 )
 
-func NewPipeCommand() cli.Command {
+func NewFilterCommand() cli.Command {
 	command := cli.Command{
-		Name:      "pipe",
-		ShortName: "p",
+		Name:      "filter",
+		ShortName: "f",
 		Usage:     "Filter out needless text passed through pipe",
-		Action:    actionPipe,
+		Action:    actionFilter,
 
 		Flags: []cli.Flag{
 			cli.StringFlag{
@@ -29,7 +29,7 @@ func NewPipeCommand() cli.Command {
 	return command
 }
 
-func actionPipe(context *cli.Context) {
+func actionFilter(context *cli.Context) {
 	stillFile, err := os.Open(context.String("model"))
 	if err != nil {
 		// TODO: Show error message.
