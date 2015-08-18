@@ -23,8 +23,7 @@ func initApp() *cli.App {
 
 	app.Commands = []cli.Command{
 		commands.NewBuildCommand(),
-		commands.NewPipeCommand(),
-		commands.NewApplyCommand(),
+		commands.NewFilterCommand(),
 	}
 
 	return app
