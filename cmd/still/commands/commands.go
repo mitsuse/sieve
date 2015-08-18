@@ -1,8 +1,10 @@
 package commands
 
 import (
+	"bufio"
 	"encoding/json"
 	"fmt"
+	"io"
 	"os"
 
 	"github.com/mitsuse/still"
@@ -36,6 +38,21 @@ func readExamples(path string) ([]*still.Example, error) {
 	return examples, nil
 }
 
+func readModel(path string) (*still.Still, error) {
+	file, err := os.Open(path)
+	if err != nil {
+		return nil, err
+	}
+	defer file.Close()
+
+	s, err := still.Deserialize(file)
+	if err != nil {
+		return nil, err
+	}
+
+	return s, nil
+}
+
 func writeModel(s *still.Still, path string) error {
 	file, err := os.Create(path)
 	if err != nil {
@@ -48,4 +65,23 @@ func writeModel(s *still.Still, path string) error {
 	}
 
 	return nil
+}
+
+func useWithPipe(s *still.Still, reader io.Reader, writer io.Writer) (err error) {
+	scanner := bufio.NewScanner(reader)
+
+	for scanner.Scan() {
+		text := scanner.Text()
+
+		if !s.Filter(text) {
+			continue
+		}
+
+		_, err = fmt.Fprintln(writer, text)
+		if err != nil {
+			return err
+		}
+	}
+
+	return scanner.Err()
 }
