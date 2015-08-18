@@ -32,19 +32,19 @@ func NewFilterCommand() cli.Command {
 func actionFilter(context *cli.Context) {
 	stillFile, err := os.Open(context.String("model"))
 	if err != nil {
-		// TODO: Show error message.
+		printError(err)
 		return
 	}
 
 	s, err := still.Deserialize(stillFile)
 	if err != nil {
-		// TODO: Show error message.
+		printError(err)
 		return
 	}
 	stillFile.Close()
 
 	if err := filterWithIo(s, os.Stdin, os.Stdout); err != nil {
-		// TODO: Show error message.
+		printError(err)
 		return
 	}
 }

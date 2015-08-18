@@ -38,12 +38,12 @@ func actionBuild(context *cli.Context) {
 
 	examplesFile, err := os.Open(context.String("examples"))
 	if err != nil {
-		// TODO: Show error message.
+		printError(err)
 		return
 	}
 
 	if err := json.NewDecoder(examplesFile).Decode(&exampleSeq); err != nil {
-		// TODO: Show error message.
+		printError(err)
 		return
 	}
 	examplesFile.Close()
@@ -52,12 +52,12 @@ func actionBuild(context *cli.Context) {
 
 	stillFile, err := os.Create(context.String("model"))
 	if err != nil {
-		// TODO: Show error message.
+		printError(err)
 		return
 	}
 
 	if err := s.Serialize(stillFile); err != nil {
-		// TODO: Show error message.
+		printError(err)
 		return
 	}
 	stillFile.Close()
