@@ -67,13 +67,18 @@ func writeModel(s *still.Still, path string) error {
 	return nil
 }
 
-func useWithPipe(s *still.Still, reader io.Reader, writer io.Writer) (err error) {
+func useWithPipe(
+	s *still.Still,
+	reader io.Reader,
+	writer io.Writer,
+	filtered bool,
+) (err error) {
 	scanner := bufio.NewScanner(reader)
 
 	for scanner.Scan() {
 		text := scanner.Text()
 
-		if !s.Filter(text) {
+		if s.Filter(text) != filtered {
 			continue
 		}
 
