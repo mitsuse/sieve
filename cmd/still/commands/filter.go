@@ -14,6 +14,11 @@ func NewFilterCommand() cli.Command {
 		Action:    actionFilter,
 
 		Flags: []cli.Flag{
+			cli.BoolFlag{
+				Name:  "filtered,f",
+				Usage: "Print filtered-out text intead",
+			},
+
 			cli.StringFlag{
 				Name:  "model,m",
 				Value: "model.still",
@@ -32,7 +37,7 @@ func actionFilter(context *cli.Context) {
 		return
 	}
 
-	if err := useWithPipe(s, os.Stdin, os.Stdout); err != nil {
+	if err := useWithPipe(s, os.Stdin, os.Stdout, context.Bool("filtered")); err != nil {
 		printError(err)
 		return
 	}
