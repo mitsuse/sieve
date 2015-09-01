@@ -21,7 +21,7 @@ For installation, execute the following command:
 $ go get github.com/mitsuse/still/cmd/still
 ```
 
-### Dependencies
+## Dependencies
 
 Still includes the following libraries as vendored packages:
 
