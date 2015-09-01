@@ -65,7 +65,7 @@ The JSON of training data should be a single array of objects which consists of 
 ]
 ```
 
-The "text" field is used for example of classifcation.
+The "text" field is used for example of classification.
 The "class" field represents the correct label of classification result.
 
 To set the number of iterations, use `-i`.
@@ -80,7 +80,7 @@ Still can test the trained model on test data with the following command:
 $ still test -m model.still -e examples.json
 ```
 
-`-m` is used for the path of a traing model.
+`-m` is used for the path of a training model.
 `-e` represents the path of test data.
 The test data has the same format as the training data.
 
