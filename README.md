@@ -35,6 +35,40 @@ Still includes the following libraries as vendored packages:
 [repo-cli]: https://github.com/codegangsta/cli/tree/5149e2fc0c3ae4bdd330358bc405e614a07cb8c9
 
 
+## Usage
+
+### Build a model
+
+Still requires the model file to filter out text,
+which consists of weights for the binary linear classifier.
+
+To build the model, use `still build`:
+
+```
+$ still build -m model.still -e examples.json -i 3
+```
+
+`-m` represents the output path of a built model.
+`-e` is used to specify the path of training data.
+The JSON of training data should be a single array of objects which consists of "text" and "class" as follow:
+
+```json
+[
+  {
+    "text": "Go 1.5 is released https://blog.golang.org/go1.5 #go_blog",
+    "class": 1
+  },
+  {
+    "text": "OnHub – Google https://on.google.com/hub/",
+    "class": 0
+  }
+]
+```
+
+To set the number of iterations, use `-i`.
+The training data are read N times when N is given as the value for `-i`.
+
+
 ## License
 
 Please read [LICENSE.txt](LICENSE.txt).
