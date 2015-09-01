@@ -72,6 +72,23 @@ To set the number of iterations, use `-i`.
 The training data are read N times when N is given as the value for `-i`.
 
 
+### Test a model
+
+Still can test the trained model on test data with the following command:
+
+```
+$ still test -m model.still -e examples.json
+```
+
+`-m` is used for the path of a traing model.
+`-e` represents the path of test data.
+The test data has the same format as the training data.
+
+Test command show [precision and recall][wikipedia-precision-recall].
+
+[wikipedia-precision-recall]: https://en.wikipedia.org/wiki/Precision_and_recall
+
+
 ## License
 
 Please read [LICENSE.txt](LICENSE.txt).
