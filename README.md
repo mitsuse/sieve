@@ -23,7 +23,7 @@ $ go get github.com/mitsuse/still/cmd/still
 
 ### Dependencies
 
-Still uses the following libraries:
+Still includes the following libraries as vendored packages:
 
 - [`mitsuse/matrix-go (v0.1.3)`][repo-matrix-go]
 - [`mitsuse/olive (v0.1.1)`][repo-olive]
