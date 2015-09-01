@@ -13,6 +13,27 @@
 A command-line tool to filter out needless text by using statistical classifier.
 
 
+## Installation
+
+For installation, execute the following command:
+
+```
+$ go get github.com/mitsuse/still/cmd/still
+```
+
+### Dependencies
+
+Still uses the following libraries:
+
+- [`mitsuse/matrix-go (v0.1.3)`][repo-matrix-go]
+- [`mitsuse/olive (v0.1.1)`][repo-matrix-go]
+- [`codegangsta/cli`][repo-cli]
+
+
+[repo-matrix-go]: https://github.com/mitsuse/matrix-go/tree/v0.1.3
+[repo-cli]: https://github.com/codegangsta/cli/tree/5149e2fc0c3ae4bdd330358bc405e614a07cb8c9
+
+
 ## License
 
 Please read [LICENSE.txt](LICENSE.txt).
