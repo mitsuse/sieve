@@ -89,6 +89,19 @@ Test command show [precision and recall][wikipedia-precision-recall].
 [wikipedia-precision-recall]: https://en.wikipedia.org/wiki/Precision_and_recall
 
 
+### Filter out text
+
+
+Still is used as a filter for the standard IO like `grep`:
+
+```
+$ cat input.txt | still filter
+```
+
+In the above command, The classification examples are lines of `input.txt`.
+The option `-f` can be used to print filtered-out text instead.
+
+
 ## License
 
 Please read [LICENSE.txt](LICENSE.txt).
