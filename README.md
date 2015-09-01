@@ -26,11 +26,12 @@ $ go get github.com/mitsuse/still/cmd/still
 Still uses the following libraries:
 
 - [`mitsuse/matrix-go (v0.1.3)`][repo-matrix-go]
-- [`mitsuse/olive (v0.1.1)`][repo-matrix-go]
+- [`mitsuse/olive (v0.1.1)`][repo-olive]
 - [`codegangsta/cli`][repo-cli]
 
 
 [repo-matrix-go]: https://github.com/mitsuse/matrix-go/tree/v0.1.3
+[repo-olive]: https://github.com/mitsuse/matrix-go/tree/v0.1.1
 [repo-cli]: https://github.com/codegangsta/cli/tree/5149e2fc0c3ae4bdd330358bc405e614a07cb8c9
 
 
