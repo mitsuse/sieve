@@ -65,6 +65,9 @@ The JSON of training data should be a single array of objects which consists of 
 ]
 ```
 
+The "text" field is used for example of classifcation.
+The "class" field represents the correct label of classification result.
+
 To set the number of iterations, use `-i`.
 The training data are read N times when N is given as the value for `-i`.
 
