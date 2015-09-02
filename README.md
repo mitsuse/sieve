@@ -95,7 +95,7 @@ Test command show [precision and recall][wikipedia-precision-recall].
 Still is used as a filter for the standard IO like `grep`:
 
 ```
-$ cat input.txt | still filter
+$ cat input.txt | still filter -m model.still
 ```
 
 In the above command, The classification examples are lines of `input.txt`.
